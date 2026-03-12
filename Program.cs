@@ -10,6 +10,13 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+// AutoMapper configuration
+builder.Services.AddAutoMapper(typeof(Program));
+
+// repository & service DI
+builder.Services.AddScoped<ProjetoTestBlue.Repository.IUsuarioRepository, ProjetoTestBlue.Repository.Impl.UsuarioRepository>();
+builder.Services.AddScoped<ProjetoTestBlue.Services.IUsuarioService, ProjetoTestBlue.Services.UsuarioService>();
+
 var connectionString = builder.Configuration.GetConnectionString("AppDbConnectionString");
 builder.Services.AddDbContext<AppDbContext>(options => options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
 

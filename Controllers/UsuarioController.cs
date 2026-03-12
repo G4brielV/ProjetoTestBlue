@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using ProjetoTestBlue.Data;
-using ProjetoTestBlue.Models;
+using System.Collections.Generic;
+using ProjetoTestBlue.DTOs;
+using ProjetoTestBlue.Services;
 
 namespace ProjetoTestBlue.Controllers
 {
@@ -9,75 +9,77 @@ namespace ProjetoTestBlue.Controllers
     [Route("api/[controller]")]
     public class UsuarioController : ControllerBase
     {
-        private readonly AppDbContext _appDbContext;
+        private readonly IUsuarioService _usuarioService;
 
-        public UsuarioController(AppDbContext appDbContext)
+        public UsuarioController(IUsuarioService usuarioService)
         {
-            _appDbContext = appDbContext;
+            _usuarioService = usuarioService;
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Usuario>>> GetUsuarios()
-        {
-            var usuarios = await _appDbContext.ProjTestBlue.ToListAsync();
+        public async Task<ActionResult<IEnumerable<UsuarioResponse>>> GetUsuarios()
+        {   
+            // TODO: Paginação
+            var usuarios = await _usuarioService.GetUsuariosAsync();
             return Ok(usuarios);
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Usuario>> GetUsuario(int id)
+        public async Task<ActionResult<UsuarioResponse>> GetUsuario(int id)
         {
-            var usuario = await _appDbContext.ProjTestBlue.FindAsync(id);
-            if (usuario == null)
-            {
-                return NotFound("Usuario não encontrado");
-            }
-
-            return Ok(usuario);
+            var result = await _usuarioService.FindByIdAsync(id);
+            return Ok(result);
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddUsuario([FromBody]Usuario usuario)
+        public async Task<IActionResult> AddUsuario([FromBody] CreateUsuarioRequest request)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            _appDbContext.ProjTestBlue.Add(usuario);
-            await _appDbContext.SaveChangesAsync();
 
-            return Created("Usuário adicionado", usuario);
+            try
+            {
+                var result = await _usuarioService.AddUsuarioAsync(request);
+                return CreatedAtAction(nameof(GetUsuario), new { id = result.Id }, result);
+            }
+            catch (InvalidOperationException ex)
+            {
+                // business rule violation (e.g. email already taken)
+                return BadRequest(new { message = ex.Message });
+            }
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateUsuario(int id, [FromBody] Usuario usuarioAtualizado)
+        public async Task<IActionResult> UpdateUsuario(int id, [FromBody] UpdateUsuarioRequest request)
         {
-            var usuarioAtual = await _appDbContext.ProjTestBlue.FindAsync(id);
-            if (usuarioAtual == null)
+            if (!ModelState.IsValid)
             {
-                return NotFound("Personagem não encontrado");
+                return BadRequest(ModelState);
+            }
+            try
+            {
+                var result = await _usuarioService.UpdateUsuarioAsync(id, request);
+                return Ok(result);
+            }
+            catch (InvalidOperationException ex)
+            {
+                // business rule violation (e.g. email already taken)
+                return BadRequest(new { message = ex.Message });
             }
 
-            _appDbContext.Entry(usuarioAtual).CurrentValues.SetValues(usuarioAtualizado);
-            await _appDbContext.SaveChangesAsync();
 
-            return StatusCode(201, usuarioAtualizado);
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUsuario(int id)
         {
-            var usuario = await _appDbContext.ProjTestBlue.FindAsync(id);
-            if (usuario == null)
-            {
-                return NotFound("Personagem não encontrado");
-            }
-
-            _appDbContext.ProjTestBlue.Remove(usuario);
-            await _appDbContext.SaveChangesAsync();
-
-            return Ok("Usuario deletado");
+            var deleted = await _usuarioService.DeleteUsuarioAsync(id);
+            if (!deleted)
+                return NotFound();
+            return NoContent();
         }
-
 
     }
 }
