@@ -10,8 +10,8 @@ using ProjetoTestBlue.Data;
 namespace ProjetoTestBlue.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260312014343_Inicial")]
-    partial class Inicial
+    [Migration("20260313022544_MigracaoInicial")]
+    partial class MigracaoInicial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,20 +25,31 @@ namespace ProjetoTestBlue.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("id");
 
                     b.Property<string>("Email")
-                        .HasColumnType("longtext");
+                        .IsRequired()
+                        .HasColumnType("varchar(255)")
+                        .HasColumnName("email");
 
                     b.Property<string>("Nome")
-                        .HasColumnType("longtext");
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)")
+                        .HasColumnName("nome");
 
                     b.Property<string>("Senha")
-                        .HasColumnType("longtext");
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("senha");
 
                     b.HasKey("Id");
 
-                    b.ToTable("ProjTestBlue");
+                    b.HasIndex("Email")
+                        .IsUnique();
+
+                    b.ToTable("usuarios", (string)null);
                 });
 #pragma warning restore 612, 618
         }
