@@ -21,63 +21,46 @@ namespace ProjetoTestBlue.Controllers
         {   
             // TODO: Paginação
             var usuarios = await _usuarioService.GetUsuariosAsync();
-            return Ok(usuarios);
+            return Ok(usuarios.Data);
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<UsuarioResponse>> GetUsuario(int id)
+        public async Task<ActionResult<UsuarioResponse>> GetUsuarioById(int id)
         {
-            var result = await _usuarioService.FindByIdAsync(id);
-            return Ok(result);
+            var result = await _usuarioService.GetByIdAsync(id);
+            if (!result.IsSuccess) return NotFound(new { message = result.Error });
+            return Ok(result.Data);
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddUsuario([FromBody] CreateUsuarioRequest request)
+        public async Task<ActionResult<UsuarioResponse>> AddUsuario([FromBody] CreateUsuarioRequest request)
         {
-            if (!ModelState.IsValid)
+            Result<UsuarioResponse> result = await _usuarioService.AddUsuarioAsync(request);
+            if (!result.IsSuccess)
             {
-                return BadRequest(ModelState);
+                return BadRequest(result.Error);
             }
 
-            try
-            {
-                var result = await _usuarioService.AddUsuarioAsync(request);
-                return CreatedAtAction(nameof(GetUsuario), new { id = result.Id }, result);
-            }
-            catch (InvalidOperationException ex)
-            {
-                // business rule violation (e.g. email already taken)
-                return BadRequest(new { message = ex.Message });
-            }
+            return CreatedAtAction(nameof(GetUsuarioById), new { id = result.Data.Id }, result.Data);
         }
 
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateUsuario(int id, [FromBody] UpdateUsuarioRequest request)
         {
-            if (!ModelState.IsValid)
+            Result<UsuarioResponse> result = await _usuarioService.UpdateUsuarioAsync(id, request);
+            if (!result.IsSuccess)
             {
-                return BadRequest(ModelState);
+                return BadRequest(result.Error);
             }
-            try
-            {
-                var result = await _usuarioService.UpdateUsuarioAsync(id, request);
-                return Ok(result);
-            }
-            catch (InvalidOperationException ex)
-            {
-                // business rule violation (e.g. email already taken)
-                return BadRequest(new { message = ex.Message });
-            }
-
-
+            return Ok(result.Data);
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUsuario(int id)
         {
-            var deleted = await _usuarioService.DeleteUsuarioAsync(id);
-            if (!deleted)
-                return NotFound();
+            var result = await _usuarioService.DeleteUsuarioAsync(id);
+            if (!result.IsSuccess)
+                return NotFound(result.Error);
             return NoContent();
         }
 

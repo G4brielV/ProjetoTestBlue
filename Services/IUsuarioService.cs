@@ -5,10 +5,10 @@ namespace ProjetoTestBlue.Services
 {
     public interface IUsuarioService
     {
-        Task<UsuarioResponse> AddUsuarioAsync(CreateUsuarioRequest request);
-        Task<UsuarioResponse> UpdateUsuarioAsync(int id, UpdateUsuarioRequest request);
-        Task<bool> DeleteUsuarioAsync(int id);
-        Task<UsuarioResponse> FindByIdAsync(int id);
-        Task<IEnumerable<UsuarioResponse>> GetUsuariosAsync();
+        Task<Result<UsuarioResponse>> AddUsuarioAsync(CreateUsuarioRequest request);
+        Task<Result<UsuarioResponse>> UpdateUsuarioAsync(int id, UpdateUsuarioRequest request);
+        Task<Result<UsuarioResponse>>  GetByIdAsync(int id);
+        Task<Result<bool>> DeleteUsuarioAsync(int id);
+        Task<Result<IEnumerable<UsuarioResponse>>> GetUsuariosAsync();
     }
 }

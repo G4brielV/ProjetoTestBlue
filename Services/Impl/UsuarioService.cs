@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.AspNetCore.Http.HttpResults;
 using ProjetoTestBlue.DTOs;
 using ProjetoTestBlue.Models;
 using ProjetoTestBlue.Repository;
@@ -18,87 +19,71 @@ namespace ProjetoTestBlue.Services
             _mapper = mapper;
         }
 
-        public async Task<UsuarioResponse> AddUsuarioAsync(CreateUsuarioRequest request)
+        public async Task<Result<UsuarioResponse>> GetByIdAsync(int id)
         {
-            if (request == null)
-                throw new ArgumentNullException(nameof(request));
+            var usuario = await _repository.FindByIdAsync(id);
+            if (usuario != null)
+            {
+                var response = _mapper.Map<UsuarioResponse>(usuario);
+                return Result<UsuarioResponse>.Success(response);
+            }
+            else
+            {
+                return Result<UsuarioResponse>.Failure("Usuario não encontrado."); 
+            }
+        }
 
+        public async Task<Result<IEnumerable<UsuarioResponse>>> GetUsuariosAsync()
+        {
+            var usuarios = await _repository.GetUsuariosAsync();
+            var response = _mapper.Map<IEnumerable<UsuarioResponse>>(usuarios);
+            return Result<IEnumerable<UsuarioResponse>>.Success(response);
+        }
+
+        public async Task<Result<UsuarioResponse>> AddUsuarioAsync(CreateUsuarioRequest request)
+        {
             // business rule: email must be unique
-            // var exists = await _repository.EmailExistsAsync(request.Email);
-            // if (exists)
-            // {
-            //     throw new InvalidOperationException("Email já está em uso");
-            // }
+            if (await _repository.EmailExistsAsync(request.Email))
+            {
+                return Result<UsuarioResponse>.Failure("Este e-mail já está em uso."); 
+            }
 
             // map DTO to domain model
             var usuario = _mapper.Map<Usuario>(request);
-
-            var added = await _repository.AddUsuarioAsync(usuario);
+            await _repository.AddUsuarioAsync(usuario);
 
             // map back to response DTO
-            var response = _mapper.Map<UsuarioResponse>(added);
-            return response;
+            var response = _mapper.Map<UsuarioResponse>(usuario);
+            return Result<UsuarioResponse>.Success(response);
         }
 
 
-        public async Task<UsuarioResponse> UpdateUsuarioAsync(int id, UpdateUsuarioRequest request)
+        public async Task<Result<UsuarioResponse>> UpdateUsuarioAsync(int id, UpdateUsuarioRequest request)
         {   
-            if (request == null)
-                throw new ArgumentNullException(nameof(request));
-
-            var usuarioAtual = await _repository.FindByIdAsync(id);
+            Usuario usuarioAtual = await _repository.FindByIdAsync(id);
             if (usuarioAtual == null)
             {
-                throw new KeyNotFoundException("Usuario não encontrado");
+                return Result<UsuarioResponse>.Failure("Usuario não encontrado"); 
             }
 
             _mapper.Map(request, usuarioAtual);
 
             var updated = await _repository.UpdateUsuarioAsync(usuarioAtual);
-    
-
-            // business rule: email must be unique
-            // var exists = await _repository.EmailExistsAsync(request.Email);
-            // if (exists)
-            // {
-            //     throw new InvalidOperationException("Email já está em uso");
-            // }
-
-            // map DTO to domain model
 
             // map back to response DTO
             var response = _mapper.Map<UsuarioResponse>(updated);
-            return response;
+            return Result<UsuarioResponse>.Success(response);
 
         }
 
-        public async Task<bool> DeleteUsuarioAsync(int id)
+        public async Task<Result<bool>> DeleteUsuarioAsync(int id)
         {
-            var usuario = await _repository.FindByIdAsync(id);
+            Usuario usuario = await _repository.FindByIdAsync(id);
             if (usuario == null)
             {
-                throw new KeyNotFoundException("Usuario não encontrado");
+                return Result<bool>.Failure("Usuario não encontrado"); 
             }
-            return await _repository.DeleteUsuarioAsync(usuario);
-        }
-
-        public async Task<UsuarioResponse> FindByIdAsync(int id)
-        {
-            var usuario = await _repository.FindByIdAsync(id);
-            if (usuario == null)
-            {
-                throw new KeyNotFoundException("Usuario não encontrado");
-            }
-
-            var response = _mapper.Map<UsuarioResponse>(usuario);
-            return response;
-        }
-
-        public async Task<IEnumerable<UsuarioResponse>> GetUsuariosAsync()
-        {
-            var usuarios = await _repository.GetUsuariosAsync();
-            var response = _mapper.Map<IEnumerable<UsuarioResponse>>(usuarios);
-            return response;
+            return Result<bool>.Success(true);
         }
     }
 }

@@ -19,14 +19,13 @@ namespace ProjetoTestBlue.Repository.Impl
             return await _context.ProjTestBlue.AnyAsync(u => u.Email == email);
         }
 
-        public async Task<Usuario> AddUsuarioAsync(Usuario usuario)
+        public async Task AddUsuarioAsync(Usuario usuario)
         {
             _context.ProjTestBlue.Add(usuario);
             await _context.SaveChangesAsync();
-            return usuario;
         }
 
-        public async Task<Usuario> FindByIdAsync(int id)
+        public async Task<Usuario?> FindByIdAsync(int id)
         {
             var usuario = await _context.ProjTestBlue.FindAsync(id);
             return usuario;
