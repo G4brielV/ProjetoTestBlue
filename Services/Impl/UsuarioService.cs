@@ -83,6 +83,7 @@ namespace ProjetoTestBlue.Services
             {
                 return Result<bool>.Failure("Usuario não encontrado"); 
             }
+            bool deleted = await _repository.DeleteUsuarioAsync(usuario);
             return Result<bool>.Success(true);
         }
     }
