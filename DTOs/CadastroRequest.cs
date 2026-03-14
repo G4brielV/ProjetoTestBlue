@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace ProjetoTestBlue.DTOs
 {
-    public class CreateUsuarioRequest
+    public class CadastroRequest
     {
         [Required(ErrorMessage = "Nome é obrigatório")]
         [MaxLength(50, ErrorMessage = "Nome não pode exceder 50 caracteres")]

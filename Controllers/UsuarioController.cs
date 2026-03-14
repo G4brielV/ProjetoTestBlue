@@ -2,9 +2,11 @@ using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using ProjetoTestBlue.DTOs;
 using ProjetoTestBlue.Services;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ProjetoTestBlue.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class UsuarioController : ControllerBase
@@ -30,18 +32,6 @@ namespace ProjetoTestBlue.Controllers
             var result = await _usuarioService.GetByIdAsync(id);
             if (!result.IsSuccess) return NotFound(new { message = result.Error });
             return Ok(result.Data);
-        }
-
-        [HttpPost]
-        public async Task<ActionResult<UsuarioResponse>> AddUsuario([FromBody] CreateUsuarioRequest request)
-        {
-            Result<UsuarioResponse> result = await _usuarioService.AddUsuarioAsync(request);
-            if (!result.IsSuccess)
-            {
-                return BadRequest(result.Error);
-            }
-
-            return CreatedAtAction(nameof(GetUsuarioById), new { id = result.Data.Id }, result.Data);
         }
 
         [HttpPut("{id}")]

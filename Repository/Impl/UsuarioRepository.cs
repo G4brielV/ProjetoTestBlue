@@ -31,6 +31,12 @@ namespace ProjetoTestBlue.Repository.Impl
             return usuario;
         }
 
+        public async Task<Usuario?> FindByEmailAsync(String email)
+        {
+            var usuario = await _context.ProjTestBlue.SingleOrDefaultAsync(u => u.Email == email);
+            return usuario;
+        }
+
         public async Task<Usuario> UpdateUsuarioAsync(Usuario usuarioNovo)
         {
             await _context.SaveChangesAsync();
@@ -49,5 +55,6 @@ namespace ProjetoTestBlue.Repository.Impl
             var usuarios = await _context.ProjTestBlue.ToListAsync();
             return usuarios;
         }
+
     }
 }

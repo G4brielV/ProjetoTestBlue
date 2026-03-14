@@ -8,9 +8,11 @@ namespace ProjetoTestBlue.Mappings
     {
         public UsuarioProfile()
         {
-            CreateMap<CreateUsuarioRequest, Usuario>();
+            CreateMap<CadastroRequest, Usuario>();
             CreateMap<UpdateUsuarioRequest, Usuario>();
+
             CreateMap<Usuario, UsuarioResponse>();
+            CreateMap<Usuario, CadastroResponse>();
         }
     }
 }

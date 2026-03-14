@@ -40,23 +40,6 @@ namespace ProjetoTestBlue.Services
             return Result<IEnumerable<UsuarioResponse>>.Success(response);
         }
 
-        public async Task<Result<UsuarioResponse>> AddUsuarioAsync(CreateUsuarioRequest request)
-        {
-            // business rule: email must be unique
-            if (await _repository.EmailExistsAsync(request.Email))
-            {
-                return Result<UsuarioResponse>.Failure("Este e-mail já está em uso."); 
-            }
-
-            // map DTO to domain model
-            var usuario = _mapper.Map<Usuario>(request);
-            await _repository.AddUsuarioAsync(usuario);
-
-            // map back to response DTO
-            var response = _mapper.Map<UsuarioResponse>(usuario);
-            return Result<UsuarioResponse>.Success(response);
-        }
-
 
         public async Task<Result<UsuarioResponse>> UpdateUsuarioAsync(int id, UpdateUsuarioRequest request)
         {   

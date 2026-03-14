@@ -9,6 +9,7 @@ namespace ProjetoTestBlue.Repository
         Task AddUsuarioAsync(Usuario usuario);
         Task<bool> EmailExistsAsync(string email);
         Task<Usuario?> FindByIdAsync(int id);
+        Task<Usuario?> FindByEmailAsync(string email);
         Task<Usuario> UpdateUsuarioAsync(Usuario usuarioNovo);
         Task<bool> DeleteUsuarioAsync(Usuario usuario);
 
