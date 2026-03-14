@@ -16,24 +16,24 @@ namespace ProjetoTestBlue.Repository.Impl
 
         public async Task<bool> EmailExistsAsync(string email)
         {
-            return await _context.ProjTestBlue.AnyAsync(u => u.Email == email);
+            return await _context.Usuarios.AnyAsync(u => u.Email == email);
         }
 
         public async Task AddUsuarioAsync(Usuario usuario)
         {
-            _context.ProjTestBlue.Add(usuario);
+            _context.Usuarios.Add(usuario);
             await _context.SaveChangesAsync();
         }
 
         public async Task<Usuario?> FindByIdAsync(int id)
         {
-            var usuario = await _context.ProjTestBlue.FindAsync(id);
+            var usuario = await _context.Usuarios.FindAsync(id);
             return usuario;
         }
 
         public async Task<Usuario?> FindByEmailAsync(String email)
         {
-            var usuario = await _context.ProjTestBlue.SingleOrDefaultAsync(u => u.Email == email);
+            var usuario = await _context.Usuarios.SingleOrDefaultAsync(u => u.Email == email);
             return usuario;
         }
 
@@ -52,7 +52,7 @@ namespace ProjetoTestBlue.Repository.Impl
 
         public async Task<IEnumerable<Usuario>> GetUsuariosAsync()
         {
-            var usuarios = await _context.ProjTestBlue.ToListAsync();
+            var usuarios = await _context.Usuarios.ToListAsync();
             return usuarios;
         }
 
