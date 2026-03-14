@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
 using ProjetoTestBlue.DTOs;
 using ProjetoTestBlue.Services;
 using Microsoft.AspNetCore.Authorization;

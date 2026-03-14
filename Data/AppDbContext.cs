@@ -43,6 +43,9 @@ namespace ProjetoTestBlue.Data
                     .HasColumnName("titulo")
                     .HasMaxLength(100)
                     .IsRequired();
+                entity.Property(c => c.UsuarioId)
+                    .HasColumnName("usuario_id");
+
                 entity.HasOne(d => d.Usuario)
                     .WithMany(p => p.TodoLists)
                     .HasForeignKey(d => d.UsuarioId)
@@ -69,6 +72,8 @@ namespace ProjetoTestBlue.Data
                 entity.Property(c => c.Posicao)
                     .HasColumnName("posicao")
                     .IsRequired();
+                entity.Property(c => c.ListId)
+                    .HasColumnName("list_id");
                 
                 entity.HasOne(d => d.TodoList)
                     .WithMany(p => p.Cards)

@@ -71,10 +71,18 @@ builder.Services.AddAutoMapper(typeof(Program));
 
 // repository & service DI
 builder.Services.AddScoped<ProjetoTestBlue.Repository.IUsuarioRepository, ProjetoTestBlue.Repository.Impl.UsuarioRepository>();
-/* builder.Services.AddScoped<ProjetoTestBlue.Services.IUsuarioService, ProjetoTestBlue.Services.UsuarioService>(); */
+
 builder.Services.AddScoped<IUsuarioService, UsuarioService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
+
+builder.Services.AddScoped<ProjetoTestBlue.Repository.ICardRepository, ProjetoTestBlue.Repository.Impl.CardRepository>();
+
+builder.Services.AddScoped<ProjetoTestBlue.Repository.ITodoListRepository, ProjetoTestBlue.Repository.Impl.TodoListRepository>();
+
+builder.Services.AddScoped<ICardService, CardService>();
+
+builder.Services.AddScoped<ITodoListService, TodoListService>();
 
 var connectionString = builder.Configuration.GetConnectionString("AppDbConnectionString");
 builder.Services.AddDbContext<AppDbContext>(options => options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
