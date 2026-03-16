@@ -25,6 +25,8 @@ namespace ProjetoTestBlue.Services.Impl
             todoList.UsuarioId = id;
             await _repository.CriarTodoListAsync(todoList);
 
+            Console.WriteLine("CHEGOUUUUUUUUUUUUUUUUUUU");
+
             var response = _mapper.Map<TodoListResponse>(todoList);
             return Result<TodoListResponse>.Success(response);
  

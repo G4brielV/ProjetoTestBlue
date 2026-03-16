@@ -87,6 +87,17 @@ builder.Services.AddScoped<ITodoListService, TodoListService>();
 var connectionString = builder.Configuration.GetConnectionString("AppDbConnectionString");
 builder.Services.AddDbContext<AppDbContext>(options => options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
 
+// CORS 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("FrontEndPolicy", policy =>
+    {
+        policy.WithOrigins("http://localhost:5173") 
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -101,6 +112,7 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 app.UseAuthorization();
 
+app.UseCors("FrontEndPolicy");
 app.MapControllers();
 
 app.Run();

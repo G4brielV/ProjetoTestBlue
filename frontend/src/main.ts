@@ -1,0 +1,30 @@
+import { createApp } from 'vue';
+import PrimeVue from 'primevue/config';
+
+// Themes
+import Aura from '@primeuix/themes/aura'; 
+
+// Icons:
+import 'primeicons/primeicons.css'; 
+import './style.css';
+
+import App from './App.vue';
+import router from './router';
+
+const app = createApp(App);
+
+app.use(router);
+app.use(PrimeVue, {
+    theme: {
+        preset: Aura,
+        options: {
+            darkModeSelector: '.my-app-dark', 
+            cssLayer: {
+                name: 'primevue',
+                order: 'primevue, tailwind-utilities' 
+            }
+        }
+    }
+});
+
+app.mount('#app');
