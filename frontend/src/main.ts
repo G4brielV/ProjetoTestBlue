@@ -1,10 +1,7 @@
 import { createApp } from 'vue';
 import PrimeVue from 'primevue/config';
+import Aura from '@primevue/themes/aura'; // Altere para esta importação
 
-// Themes
-import Aura from '@primeuix/themes/aura'; 
-
-// Icons:
 import 'primeicons/primeicons.css'; 
 import './style.css';
 

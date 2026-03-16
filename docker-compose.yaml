@@ -1,0 +1,49 @@
+services:
+  db:
+    image: mysql:8.0
+    container_name: mysql_db
+    restart: always
+    environment:
+      MYSQL_DATABASE: ProjTestBlue
+      MYSQL_ROOT_PASSWORD: SenhaSQL
+    ports:
+      - "3307:3306"
+
+  phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: phpmyadmin_web
+    restart: always
+    ports:
+      - "8081:80"
+    environment:
+      - PMA_ARBITRARY=1
+      - PMA_HOST=db
+      - PMA_USER=root
+      - PMA_PASSWORD=SenhaSQL
+    depends_on:
+      - db
+
+  backend:
+    build: ./backend
+    container_name: backend_api
+    restart: on-failure
+    depends_on:
+      - db
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:5029
+      - ConnectionStrings__AppDbConnectionString=server=db;database=ProjTestBlue;User=root;Password=SenhaSQL
+      - Jwt__Key=minha-super-chave-secreta-para-token-jwt-2026
+      - Jwt__Issuer=ProjetoTestBlue
+      - Jwt__Audience=UsuariosProjetoTestBlue
+    ports:
+      - "5029:5029"
+
+  frontend:
+    build: ./frontend
+    container_name: frontend_web
+    restart: on-failure
+    depends_on:
+      - backend
+    ports:
+      - "5173:80"

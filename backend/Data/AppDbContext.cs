@@ -13,7 +13,6 @@ namespace ProjetoTestBlue.Data
         {
             base.OnModelCreating(modelBuilder);
 
-            // Configuração da Entidade Usuario via Fluent API
             modelBuilder.Entity<Usuario>(entity =>
             {
                 entity.ToTable("usuarios"); // Nome da tabela
@@ -80,7 +79,15 @@ namespace ProjetoTestBlue.Data
                     .HasForeignKey(d => d.ListId)
                     .OnDelete(DeleteBehavior.Cascade);
             });
-        }
-                
+
+            // Usuario padrao:
+            modelBuilder.Entity<Usuario>().HasData(new Usuario
+            {
+                Id = 1,
+                Nome = "Teste",
+                Email = "teste@example.com",
+                Senha = "$2a$11$7hQ9zfoWMuNPvvlcwizuEOSvE0AKZNDS0cHWrK16Abr9PwsvtdCFG" 
+            });
+        }         
     }
 }

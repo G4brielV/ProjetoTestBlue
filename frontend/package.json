@@ -5,11 +5,12 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vue-tsc -b && vite build",
+    "build": "vite build",
     "preview": "vite preview"
   },
   "dependencies": {
-    "@tailwindcss/vite": "^4.2.1",
+    "@primeuix/themes": "2.0.3",
+    "@primevue/themes": "^4.5.4",
     "axios": "^1.13.6",
     "primeicons": "^7.0.0",
     "primevue": "^4.5.4",
