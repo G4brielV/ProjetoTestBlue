@@ -99,8 +99,8 @@ O projeto está totalmente dockerizado, o que facilita a execução em qualquer 
 **1. Clone o repositório:**
 
 ```Bash
-git clone https://github.com/seu-usuario/nome-do-repositorio.git
-cd nome-do-repositorio
+git clone https://github.com/G4brielV/ProjetoTestBlue.git
+cd ProjetoTestBlue
 ```
 
 **2. Suba os containers:**
